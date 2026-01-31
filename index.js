@@ -10,29 +10,38 @@ function gcd(a, b) {
   return a;
 }
 
-app.get('/aminov_bun_gmail_com', (req, res) => {
-  const xRaw = req.query.x;
-  const yRaw = req.query.y;
+function parseNatural(value) {
+  if (typeof value !== 'string') return null;
 
-  if (
-    typeof xRaw !== 'string' ||
-    typeof yRaw !== 'string' ||
-    !/^\{\d+\}$/.test(xRaw) ||
-    !/^\{\d+\}$/.test(yRaw)
-  ) {
-    res.status(200);
-    res.setHeader('Content-Type', 'text/plain');
+  // remove optional braces
+  if (value.startsWith('{') && value.endsWith('}')) {
+    value = value.slice(1, -1);
+  }
+
+  // must be digits only
+  if (!/^\d+$/.test(value)) return null;
+
+  return BigInt(value);
+}
+
+app.get('/aminov_bun_gmail_com', (req, res) => {
+  res.status(200);
+  res.setHeader('Content-Type', 'text/plain');
+
+  const x = parseNatural(req.query.x);
+  const y = parseNatural(req.query.y);
+
+  if (x === null || y === null) {
     res.end('NaN');
     return;
   }
 
-  const x = BigInt(xRaw.slice(1, -1));
-  const y = BigInt(yRaw.slice(1, -1));
+  if (x === 0n || y === 0n) {
+    res.end('0');
+    return;
+  }
 
   const result = (x * y) / gcd(x, y);
-
-  res.status(200);
-  res.setHeader('Content-Type', 'text/plain');
   res.end(result.toString());
 });
 
