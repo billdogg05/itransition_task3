@@ -14,12 +14,11 @@ app.get('/aminov_bun_gmail_com', (req, res) => {
   const xRaw = req.query.x;
   const yRaw = req.query.y;
 
-  // только строки вида {123}
   if (
     typeof xRaw !== 'string' ||
     typeof yRaw !== 'string' ||
-    !/^\{[1-9]\d*\}$/.test(xRaw) ||
-    !/^\{[1-9]\d*\}$/.test(yRaw)
+    !/^\{\d+\}$/.test(xRaw) ||
+    !/^\{\d+\}$/.test(yRaw)
   ) {
     res.status(200);
     res.setHeader('Content-Type', 'text/plain');
